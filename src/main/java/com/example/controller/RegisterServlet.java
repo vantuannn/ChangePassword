@@ -1,4 +1,5 @@
 package com.example.controller;
+
 import com.example.dao.UsersDAO;
 import com.example.model.Student;
 
@@ -39,13 +40,18 @@ public class RegisterServlet extends HttpServlet {
                     case "create":
                         this.insertStudent(req, resp);
                         break;
+                    case "update":
+//                        this.confirmUpdate(req, resp);
+                        break;
+                    case "updatePassword":
+                        this.confirmPassword(req, resp);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-        if (passWord.equals(confirmPassword)){
-            usersDAO.insert_StudentMember(new Student(username,email, passWord));
+        if (passWord.equals(confirmPassword)) {
+            usersDAO.insert_StudentMember(new Student(username, email, passWord));
             System.out.println("Đăng ký thành công!");
             resp.sendRedirect("view/login.jsp");
         } else {
@@ -57,13 +63,13 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
-        if(action == null) {
+        if (action == null) {
             action = "";
         }
-        try{
-            switch (action){
+        try {
+            switch (action) {
                 case "create":
-                    showNewForm(req,resp);
+                    showNewForm(req, resp);
                     break;
             }
         } catch (ServletException e) {
@@ -78,22 +84,24 @@ public class RegisterServlet extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         boolean role = Boolean.parseBoolean(req.getParameter("role"));
-        Student newStudent = new Student(name, email,password,role);
+        Student newStudent = new Student(name, email, password, role);
         this.usersDAO.insert_StudentMember(newStudent);
         resp.sendRedirect("login.jsp");
     }
+
     private void showNewForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("create.jsp");
         dispatcher.forward(req, resp);
     }
+
     private void confirmPassword(HttpServletRequest req, HttpServletResponse resp) throws SQLException, ClassNotFoundException, ServletException, IOException, SQLException {
         int id = Integer.parseInt(req.getParameter("id"));
         String oldPassword = req.getParameter("oldPassword");
         String newPassword = req.getParameter("newPassword");
         String confirmPassword = req.getParameter("confirmPassword");
 
-        Student student = usersDAO.selectPassword(id);
-        String passwordUser =student.getPassword();
+        Student student = usersDAO.checkPassword(id,oldPassword);
+        String passwordUser = student.getPassword();
         if (passwordUser.equals(oldPassword)) {
             if (confirmPassword.equals(newPassword)) {
                 usersDAO.updatePassword(id, newPassword);
@@ -110,6 +118,16 @@ public class RegisterServlet extends HttpServlet {
             req.setAttribute("id", id);
             req.getRequestDispatcher("user/formChangePassword.jsp").forward(req, resp);
         }
+    }
 
+    private void confirmUpdate(HttpServletRequest req, HttpServletResponse res) throws SQLException, ClassNotFoundException, ServletException, IOException {
+        String name = req.getParameter("name");
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
+        String role = req.getParameter("role");
+
+        Student student = new Student(name, email, password, role);
+        UsersDA(id, student);
+        res.sendRedirect("/student");
     }
 }

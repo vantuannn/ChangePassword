@@ -7,7 +7,10 @@ public class Student {
     private String password;
     private boolean role;
 
-    public Student (String name){}
+    public Student() {
+    }
+
+    public Student (String name, String email, String password, String role){}
 
     public Student (String name, String email, String password, boolean role){
         this.name = name;
