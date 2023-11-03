@@ -1,22 +1,25 @@
 package com.example.model;
 
-public class Teacher {
+public class User {
     private int id;
     private String name;
     private String email;
     private String password;
-    private String role;
+    private boolean role;
 
-    public Teacher(String name, String email, String password, String role) {
+    public User() {
+    }
+
+    public User(String name, String email, String password, String role){}
+
+    public User(String name, String email, String password, boolean role){
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
-    public Teacher() {}
-
-    public Teacher(int id, String name, String email,String password, String role) {
+    public User(String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -56,11 +59,11 @@ public class Teacher {
         this.password = password;
     }
 
-    public String getRole() {
+    public boolean isRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(boolean role) {
         this.role = role;
     }
 }
